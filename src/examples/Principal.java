@@ -29,7 +29,7 @@ public class Principal {
 	public static void main(String[] args) {
 		
 		Configurator.initialize(Principal.class.getName(),
-				"./src/resources/log4j2.properties");
+			"./src/resources/log4j2.properties");
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, 1958);
@@ -37,10 +37,11 @@ public class Principal {
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
 		Date bornDate = calendar.getTime();
 		log.info(() -> String.format("Born date: %s", bornDate));
-		log.info(() -> String.format("%d years", age(bornDate)));
+		log.info(() -> String.format("%d years old", age(bornDate)));
 		
 		Person p = new Person("John", LocalDate.of(1958, Month.APRIL, 1));
 		log.info(() -> String.format("%d years", age(p.getBirthday())));
+		log.info(() -> String.format("%d old", getAge(p.getBirthday())));
 		
 		Car c1 = new Car("X1", 50000, Year.of(1995));
 		Car c2 = new Car("OP", 20000, Year.of(2001));
@@ -48,36 +49,44 @@ public class Principal {
 		List<Car> cars = Arrays.asList(c1, c2, c3);
 		cars.forEach(c -> log.info(c.toString()));
 		cars.stream().filter(c -> c.getYear().isAfter(Year.of(2000)))
-				.forEach(c -> log.info(c));
+			.forEach(c -> log.info(c));
 		
 		Rental rental = new Rental();
 		rental.setPerson(p);
 		rental.setCar(c1);
 		rental.setTimeOfRent(LocalDateTime.of(LocalDate.now(),
-				LocalTime.of(LocalTime.now().getHour(), 0)));
+			LocalTime.of(LocalTime.now().getHour(), 0)));
 		rental.setExpectedReturnDate(
-				LocalDateTime.now().plusDays(3).plusHours(2));
+			LocalDateTime.now().plusDays(3).plusHours(2));
 		log.info(() -> ticket(rental));
 		
 	}
 	
 	private static int age(Date bornDate) {
-		return Period.between(bornDate.toInstant()
-				.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now())
-				.getYears();
+		return Period.between(
+			bornDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+			LocalDate.now()).getYears();
 	}
 	
 	private static int age(LocalDate bornDate) {
 		return Period.between(bornDate, LocalDate.now()).getYears();
 	}
 	
+	private static int getAge(LocalDate bornDate) {
+		return LocalDate.now().minusYears(bornDate.getYear()).getYear();
+	}
+	
 	private static String ticket(Rental rental) {
 		DateTimeFormatter formatter = DateTimeFormatter
-				.ofPattern("dd/MM/yyy HH:mm", new Locale("pt", "BR"));
+			.ofPattern("dd/MM/yyy HH:mm", new Locale("pt", "BR"));
 		StringBuilder b = new StringBuilder();
 		b.append("\n>>>>> # RentCar S/A # <<<<<");
 		b.append("\nClient: ");
 		b.append(rental.getPerson().getName());
+		b.append(" - Age1: ");
+		b.append(age(rental.getPerson().getBirthday()));
+		b.append(" - Age2: ");
+		b.append(getAge(rental.getPerson().getBirthday()));
 		b.append("\nVehicule: ");
 		b.append(rental.getCar().getModel());
 		b.append("\nMoment of get: ");
