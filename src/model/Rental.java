@@ -1,7 +1,16 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class Rental {
 	
 	private Person person;
@@ -9,9 +18,6 @@ public class Rental {
 	private LocalDateTime timeOfRent;
 	private LocalDateTime expectedReturnDate;
 	private LocalDateTime registeredReturnDate;
-	
-	public Rental() {
-	}
 	
 	public Rental(Person person, Car car, LocalDateTime timeOfRent,
 			LocalDateTime expectedReturnDate) {
@@ -21,44 +27,21 @@ public class Rental {
 		this.expectedReturnDate = expectedReturnDate;
 	}
 	
-	public Person getPerson() {
-		return person;
+	@Override
+	public String toString() {
+		DateTimeFormatter formatter = DateTimeFormatter
+				.ofPattern("dd/MM/yyy HH:mm", new Locale("pt", "BR"));
+		return new StringBuilder().append("\n>>>>> # RentCar S/A # <<<<<")
+				.append("\nClient: ").append(getPerson().getName())
+				.append(" - Age1: ")
+				.append(this.person.age())
+				.append(" - Age2: ")
+				.append(this.person.getAge())
+				.append("\nVehicule: ").append(getCar().getModel())
+				.append("\nMoment of get: ")
+				.append(getTimeOfRent().format(formatter))
+				.append("\nExpected time for return: ")
+				.append(getExpectedReturnDate().format(formatter))
+				.append("\n>>>>> # RentCar S/A # <<<<<").toString();
 	}
-	
-	public void setPerson(Person person) {
-		this.person = person;
-	}
-	
-	public Car getCar() {
-		return car;
-	}
-	
-	public void setCar(Car car) {
-		this.car = car;
-	}
-	
-	public LocalDateTime getTimeOfRent() {
-		return timeOfRent;
-	}
-	
-	public void setTimeOfRent(LocalDateTime timeOfRent) {
-		this.timeOfRent = timeOfRent;
-	}
-	
-	public LocalDateTime getExpectedReturnDate() {
-		return expectedReturnDate;
-	}
-	
-	public void setExpectedReturnDate(LocalDateTime expectedReturnDate) {
-		this.expectedReturnDate = expectedReturnDate;
-	}
-	
-	public LocalDateTime getRegisteredReturnDate() {
-		return registeredReturnDate;
-	}
-	
-	public void setRegisteredReturnDate(LocalDateTime registeredReturnDate) {
-		this.registeredReturnDate = registeredReturnDate;
-	}
-	
 }

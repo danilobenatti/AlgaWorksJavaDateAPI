@@ -1,34 +1,36 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Person {
 	
 	private String name;
 	private LocalDate birthday;
 	
-	public Person() {
+	static int age(Date bornDate) {
+		return Period.between(bornDate.toInstant()
+				.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now())
+				.getYears();
 	}
 	
-	public Person(String name, LocalDate birthday) {
-		this.name = name;
-		this.birthday = birthday;
+	public int age() {
+		return Period.between(this.birthday, LocalDate.now()).getYears();
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public LocalDate getBirthday() {
-		return birthday;
-	}
-
-	public void setBirthday(LocalDate birthday) {
-		this.birthday = birthday;
+	
+	public int getAge() {
+		return LocalDate.now().minusYears(this.birthday.getYear()).getYear();
 	}
 	
 }

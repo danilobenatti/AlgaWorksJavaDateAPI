@@ -29,7 +29,7 @@ public class Principal {
 	public static void main(String[] args) {
 		
 		Configurator.initialize(Principal.class.getName(),
-			"./src/resources/log4j2.properties");
+				"./src/resources/log4j2.properties");
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, 1958);
@@ -49,23 +49,24 @@ public class Principal {
 		List<Car> cars = Arrays.asList(c1, c2, c3);
 		cars.forEach(c -> log.info(c.toString()));
 		cars.stream().filter(c -> c.getYear().isAfter(Year.of(2000)))
-			.forEach(c -> log.info(c));
+				.forEach(c -> log.info(c));
 		
 		Rental rental = new Rental();
 		rental.setPerson(p);
 		rental.setCar(c1);
 		rental.setTimeOfRent(LocalDateTime.of(LocalDate.now(),
-			LocalTime.of(LocalTime.now().getHour(), 0)));
+				LocalTime.of(LocalTime.now().getHour(), 0)));
 		rental.setExpectedReturnDate(
-			LocalDateTime.now().plusDays(3).plusHours(2));
+				LocalDateTime.now().plusDays(3).plusHours(2));
 		log.info(() -> ticket(rental));
+		log.info(() -> rental);
 		
 	}
 	
 	private static int age(Date bornDate) {
-		return Period.between(
-			bornDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-			LocalDate.now()).getYears();
+		return Period.between(bornDate.toInstant()
+				.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now())
+				.getYears();
 	}
 	
 	private static int age(LocalDate bornDate) {
@@ -78,23 +79,19 @@ public class Principal {
 	
 	private static String ticket(Rental rental) {
 		DateTimeFormatter formatter = DateTimeFormatter
-			.ofPattern("dd/MM/yyy HH:mm", new Locale("pt", "BR"));
-		StringBuilder b = new StringBuilder();
-		b.append("\n>>>>> # RentCar S/A # <<<<<");
-		b.append("\nClient: ");
-		b.append(rental.getPerson().getName());
-		b.append(" - Age1: ");
-		b.append(age(rental.getPerson().getBirthday()));
-		b.append(" - Age2: ");
-		b.append(getAge(rental.getPerson().getBirthday()));
-		b.append("\nVehicule: ");
-		b.append(rental.getCar().getModel());
-		b.append("\nMoment of get: ");
-		b.append(rental.getTimeOfRent().format(formatter));
-		b.append("\nExpected time for return: ");
-		b.append(rental.getExpectedReturnDate().format(formatter));
-		b.append("\n>>>>> # RentCar S/A # <<<<<");
-		return b.toString();
+				.ofPattern("dd/MM/yyy HH:mm", new Locale("pt", "BR"));
+		return new StringBuilder().append("\n>>>>> # RentCar S/A # <<<<<")
+				.append("\nClient: ").append(rental.getPerson().getName())
+				.append(" - Age1: ")
+				.append(age(rental.getPerson().getBirthday()))
+				.append(" - Age2: ")
+				.append(getAge(rental.getPerson().getBirthday()))
+				.append("\nVehicule: ").append(rental.getCar().getModel())
+				.append("\nMoment of get: ")
+				.append(rental.getTimeOfRent().format(formatter))
+				.append("\nExpected time for return: ")
+				.append(rental.getExpectedReturnDate().format(formatter))
+				.append("\n>>>>> # RentCar S/A # <<<<<").toString();
 	}
 	
 }
