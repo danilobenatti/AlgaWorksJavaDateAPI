@@ -37,11 +37,13 @@ public class Principal {
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
 		Date bornDate = calendar.getTime();
 		log.info(() -> String.format("Born date: %s", bornDate));
-		log.info(() -> String.format("%d years old", age(bornDate)));
 		
-		Person p = new Person("John", LocalDate.of(1958, Month.APRIL, 1));
-		log.info(() -> String.format("%d years", age(p.getBirthday())));
-		log.info(() -> String.format("%d old", getAge(p.getBirthday())));
+		Person p = new Person();
+		p.setName("John");
+		p.setBirthday(LocalDate.of(1950, Month.JANUARY, 5));
+		
+		log.info(() -> String.format("%d years old", age(p)));
+		log.info(() -> String.format("%d old", p.getAge()));
 		
 		Car c1 = new Car("X1", 50000, Year.of(1995));
 		Car c2 = new Car("OP", 20000, Year.of(2001));
@@ -63,18 +65,38 @@ public class Principal {
 		
 	}
 	
-	private static int age(Date bornDate) {
-		return Period.between(bornDate.toInstant()
-				.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now())
-				.getYears();
+	private static int age(Person person) {
+		return age(getBornDate(person), getDeathDate(person));
 	}
 	
-	private static int age(LocalDate bornDate) {
-		return Period.between(bornDate, LocalDate.now()).getYears();
+	private static Date getBornDate(Person person) {
+		return Date.from(person.getBirthday()
+				.atStartOfDay(ZoneId.systemDefault()).toInstant());
 	}
 	
-	private static int getAge(LocalDate bornDate) {
-		return LocalDate.now().minusYears(bornDate.getYear()).getYear();
+	private static Date getDeathDate(Person person) {
+		if (person.getDeathday() != null) {
+			return Date.from(person.getDeathday()
+					.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		}
+		return null;
+	}
+	
+	private static int age(Date birthDay, Date deathDay) {
+		ZoneId zoneId = ZoneId.systemDefault();
+		if (deathDay == null) {
+			return Period
+					.between(birthDay.toInstant().atZone(zoneId).toLocalDate(),
+							LocalDate.now())
+					.getYears();
+		}
+		if (deathDay.after(birthDay)) {
+			return Period
+					.between(birthDay.toInstant().atZone(zoneId).toLocalDate(),
+							deathDay.toInstant().atZone(zoneId).toLocalDate())
+					.getYears();
+		}
+		return 0;
 	}
 	
 	private static String ticket(Rental rental) {
@@ -82,10 +104,7 @@ public class Principal {
 				.ofPattern("dd/MM/yyy HH:mm", new Locale("pt", "BR"));
 		return new StringBuilder().append("\n>>>>> # RentCar S/A # <<<<<")
 				.append("\nClient: ").append(rental.getPerson().getName())
-				.append(" - Age1: ")
-				.append(age(rental.getPerson().getBirthday()))
-				.append(" - Age2: ")
-				.append(getAge(rental.getPerson().getBirthday()))
+				.append(" - Age: ").append(rental.getPerson().getAge())
 				.append("\nVehicule: ").append(rental.getCar().getModel())
 				.append("\nMoment of get: ")
 				.append(rental.getTimeOfRent().format(formatter))

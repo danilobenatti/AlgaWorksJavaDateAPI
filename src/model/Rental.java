@@ -30,13 +30,10 @@ public class Rental {
 	@Override
 	public String toString() {
 		DateTimeFormatter formatter = DateTimeFormatter
-				.ofPattern("dd/MM/yyy HH:mm", new Locale("pt", "BR"));
+				.ofPattern("dd/MM/yyy HH:mm", Locale.getDefault());
 		return new StringBuilder().append("\n>>>>> # RentCar S/A # <<<<<")
 				.append("\nClient: ").append(getPerson().getName())
-				.append(" - Age1: ")
-				.append(this.person.age())
-				.append(" - Age2: ")
-				.append(this.person.getAge())
+				.append(" - Age: ").append(this.person.getAge())
 				.append("\nVehicule: ").append(getCar().getModel())
 				.append("\nMoment of get: ")
 				.append(getTimeOfRent().format(formatter))
