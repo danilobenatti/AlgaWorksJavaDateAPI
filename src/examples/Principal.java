@@ -42,7 +42,7 @@ public class Principal {
 		p.setName("John");
 		p.setBirthday(LocalDate.of(1950, Month.JANUARY, 5));
 		
-		log.info(() -> String.format("%d years old", age(p)));
+		log.info(() -> String.format("%d years old", getAge(p)));
 		log.info(() -> String.format("%d old", p.getAge()));
 		
 		Car c1 = new Car("X1", 50000, Year.of(1995));
@@ -65,8 +65,8 @@ public class Principal {
 		
 	}
 	
-	private static int age(Person person) {
-		return age(getBornDate(person), getDeathDate(person));
+	private static Integer getAge(Person person) {
+		return getAge(getBornDate(person), getDeathDate(person));
 	}
 	
 	private static Date getBornDate(Person person) {
@@ -82,21 +82,20 @@ public class Principal {
 		return null;
 	}
 	
-	private static int age(Date birthDay, Date deathDay) {
+	private static Integer getAge(Date birthDay, Date deathDay) {
 		ZoneId zoneId = ZoneId.systemDefault();
 		if (deathDay == null) {
 			return Period
 					.between(birthDay.toInstant().atZone(zoneId).toLocalDate(),
 							LocalDate.now())
 					.getYears();
-		}
-		if (deathDay.after(birthDay)) {
+		} else if (deathDay.after(birthDay)) {
 			return Period
 					.between(birthDay.toInstant().atZone(zoneId).toLocalDate(),
 							deathDay.toInstant().atZone(zoneId).toLocalDate())
 					.getYears();
 		}
-		return 0;
+		return null;
 	}
 	
 	private static String ticket(Rental rental) {
